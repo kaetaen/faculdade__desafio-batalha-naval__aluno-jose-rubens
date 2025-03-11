@@ -2,6 +2,6 @@
 
 ## Descrição
 
-- Desafio: simulação de movimentação de peças de xadrez
+- Desafio: batalha naval
 - Nivel: iniciante
 - Aluno: José Rubens dos Santos
