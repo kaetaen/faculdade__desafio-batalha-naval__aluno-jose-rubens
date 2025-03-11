@@ -5,6 +5,7 @@
 #define TAMANHO_TABULEIRO 10
 #define AGUA 0
 #define NAVIO 3
+#define HABILIDADE 5
 
 // Função para inicializar o tabuleiro com água
 void inicializarTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
@@ -47,38 +48,6 @@ bool posicionarNavio(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int li
     return true;
 }
 
-// Função para posicionar um navio na diagonal
-bool posicionarNavioDiagonal(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int linha, int coluna, int tamanho, char direcao) {
-    if (direcao == 'd') {
-        if (linha + tamanho > TAMANHO_TABULEIRO || coluna + tamanho > TAMANHO_TABULEIRO) {
-            return false; // Navio sai dos limites do tabuleiro
-        }
-        for (int i = 0; i < tamanho; i++) {
-            if (tabuleiro[linha + i][coluna + i] == NAVIO) {
-                return false; // Sobreposição de navios
-            }
-        }
-        for (int i = 0; i < tamanho; i++) {
-            tabuleiro[linha + i][coluna + i] = NAVIO;
-        }
-    } else if (direcao == 'e') {
-        if (linha + tamanho > TAMANHO_TABULEIRO || coluna - tamanho < -1) {
-            return false; // Navio sai dos limites do tabuleiro
-        }
-        for (int i = 0; i < tamanho; i++) {
-            if (tabuleiro[linha + i][coluna - i] == NAVIO) {
-                return false; // Sobreposição de navios
-            }
-        }
-        for (int i = 0; i < tamanho; i++) {
-            tabuleiro[linha + i][coluna - i] = NAVIO;
-        }
-    } else {
-        return false; // Direção inválida
-    }
-    return true;
-}
-
 // Função para exibir o tabuleiro
 void exibirTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
     printf("Tabuleiro:\n");
@@ -87,6 +56,24 @@ void exibirTabuleiro(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO]) {
             printf("%d ", tabuleiro[i][j]);
         }
         printf("\n");
+    }
+}
+
+// Função para aplicar uma matriz de habilidade ao tabuleiro
+void aplicarHabilidade(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int habilidade[5][5], int origemLinha, int origemColuna) {
+    int tamanhoHabilidade = 5;
+    int offset = tamanhoHabilidade / 2;
+
+    for (int i = 0; i < tamanhoHabilidade; i++) {
+        for (int j = 0; j < tamanhoHabilidade; j++) {
+            int linha = origemLinha + i - offset;
+            int coluna = origemColuna + j - offset;
+            if (linha >= 0 && linha < TAMANHO_TABULEIRO && coluna >= 0 && coluna < TAMANHO_TABULEIRO) {
+                if (habilidade[i][j] == 1) {
+                    tabuleiro[linha][coluna] = HABILIDADE;
+                }
+            }
+        }
     }
 }
 
@@ -102,14 +89,37 @@ int main() {
         printf("Erro ao posicionar navio vertical.\n");
     }
 
-    // Posicionar navios diagonais
-    if (!posicionarNavioDiagonal(tabuleiro, 0, 0, 3, 'd')) {
-        printf("Erro ao posicionar navio diagonal.\n");
-    }
-    if (!posicionarNavioDiagonal(tabuleiro, 0, 9, 3, 'e')) {
-        printf("Erro ao posicionar navio diagonal.\n");
-    }
+    // Matrizes de habilidades
+    int cone[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1},
+        {0, 0, 0, 0, 0},
+        {0, 0, 0, 0, 0}
+    };
 
+    int cruz[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 0, 1, 0, 0},
+        {1, 1, 1, 1, 1},
+        {0, 0, 1, 0, 0},
+        {0, 0, 1, 0, 0}
+    };
+
+    int octaedro[5][5] = {
+        {0, 0, 1, 0, 0},
+        {0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1},
+        {0, 1, 1, 1, 0},
+        {0, 0, 1, 0, 0}
+    };
+
+    // Aplicar habilidades ao tabuleiro
+    aplicarHabilidade(tabuleiro, cone, 2, 2);
+    aplicarHabilidade(tabuleiro, cruz, 5, 5);
+    aplicarHabilidade(tabuleiro, octaedro, 7, 7);
+
+    // Exibir tabuleiro com habilidades
     exibirTabuleiro(tabuleiro);
 
     return 0;
