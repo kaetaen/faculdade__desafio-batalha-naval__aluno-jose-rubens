@@ -3,5 +3,5 @@
 ## Descrição
 
 - Desafio: batalha naval
-- Nivel: nivel aventureiro
+- Nivel: nivel mestre
 - Aluno: José Rubens dos Santos
